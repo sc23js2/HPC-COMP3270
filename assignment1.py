@@ -14,7 +14,7 @@ def simulateQueue(T_final, lambda_arrival, mu_service, C, runs=1):
 
     #1 initialise
     time_step = 0.01 # time step
-    N = int(T_final / time_step) # 
+    N = int(T_final / time_step) + 1 # 
     sigma = 1
 
     Q_backups = []
@@ -54,33 +54,45 @@ def simulateQueue(T_final, lambda_arrival, mu_service, C, runs=1):
     stdev_Q_len = 0
     mean_occ = 0
     total_runtime = 0
-        
 
-    mean_Q_len = (1 / N) * np.sum(Q)
-
-    stdev_Q_len = np.std(Q, ddof=1) #only need to caluclate for one 1 bc they are all the same length?
-    
+    mean_Q_len = np.mean(Q_backups)
+    stdev_Q_len = np.std(Q_backups, ddof=1) #only need to caluclate for one 1 bc they are all the same length?
     mean_occ = (mean_Q_len / C) * 100 #convert to percentage
     total_runtime = time.time() - execution_start_time
-    
-
-    #do calculations
-
 
     #print results
-
-    print("Mean queue length...", mean_Q_len)
-    print("Stdev queue length...", stdev_Q_len)
-    print("Mean occupancy: %....", mean_occ)
-    print("Total run time: ... seconds", total_runtime)
-
+    print("Queue statistics over", runs, "runs.")
+    print(f"Mean queue length: {mean_Q_len:.2f}")
+    print(f"Stdev queue length: {stdev_Q_len:.2f}")
+    print(f"Mean occupancy: {mean_occ:.2f}%")
+    print(f"Total run time: {total_runtime:.2f} seconds")
     return 0
 
 
+def plot():
+    # Initialise a single plot before the for-loop
+    plt.figure()
+
+    # Separate plot for each run in the same figure
+    plt.plot(time_points, Q, linewidth=0.8, alpha=0.7)
+
+    # Define the plot elements like axis labels
+    plt.xlabel('Time (minutes)')
+    plt.ylabel('Queue length')
+    plt.title('SDE queue simulation (' + str(runs) + ' runs)')
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+
+    # Export plot as a PNG image
+    plt.savefig(...)
 
 def main():
+    print("Task A:")
     simulateQueue(160, 4., 0.4, 16, 100)
 
+    print("/nTask B:")
+    simulateQueue(120, 400/120, 1/5, 32, 5)
+    #PLOT IS MANDATORY
 
 if __name__ == "__main__":
     main()
